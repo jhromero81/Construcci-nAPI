@@ -1,13 +1,16 @@
 /**
- * Componente Principal de la Aplicación
+ * ============================================
+ * COMPONENTE PRINCIPAL DE LA APLICACION
+ * ============================================
  * 
- * Este es el componente raíz que maneja el enrutamiento
- * de la aplicación de autenticación.
+ * Este es el archivo raiz de React que configura
+ * las rutas de navegacion de la aplicacion.
  * 
- * Rutas:
- * - /login: Página de inicio de sesión
- * - /register: Página de registro
- * - /dashboard: Panel principal (requiere autenticación)
+ * Rutas disponibles:
+ * - /         -> Redirige a login
+ * - /login    -> Pagina de inicio de sesion
+ * - /register -> Pagina de registro
+ * - /dashboard -> Panel principal (requiere sesion)
  */
 
 import React from 'react';
@@ -19,23 +22,24 @@ import './App.css';
 
 function App() {
     return (
+        // Router permite navegar entre paginas sin recargar
         <Router>
             <div className="App">
-                {/* Definición de rutas de la aplicación */}
+                {/* Definicion de rutas */}
                 <Routes>
-                    {/* Ruta de inicio de sesión */}
+                    {/* Ruta para iniciar sesion */}
                     <Route path="/login" element={<Login />} />
                     
-                    {/* Ruta de registro */}
+                    {/* Ruta para crear cuenta */}
                     <Route path="/register" element={<Register />} />
                     
-                    {/* Ruta del dashboard */}
+                    {/* Ruta del panel principal */}
                     <Route path="/dashboard" element={<Dashboard />} />
                     
-                    {/* Redirigir ruta raíz al login */}
+                    {/* La ruta raiz redirige a login */}
                     <Route path="/" element={<Navigate to="/login" replace />} />
                     
-                    {/* Ruta por defecto para rutas no encontradas */}
+                    {/* Cualquier otra ruta redirige a login */}
                     <Route path="*" element={<Navigate to="/login" replace />} />
                 </Routes>
             </div>

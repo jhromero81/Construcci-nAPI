@@ -1,13 +1,16 @@
 /**
- * Componente de Inicio de Sesión
+ * ============================================
+ * COMPONENTE DE INICIO DE SESION
+ * ============================================
  * 
- * Este componente permite a los usuarios autenticarse
- * en el sistema ingresando su usuario y contraseña.
+ * Este componente muestra un formulario donde el usuario
+ * puede ingresar su usuario y contraseña para acceder
+ * al sistema.
  * 
- * Características:
- * - Formulario controlado con React
- * - Manejo de estados de carga y error
- * - Redirección al dashboard tras login exitoso
+ * Funcionalidades:
+ * - Formulario con validacion
+ * - Muestra mensajes de error o exito
+ * - Redirige al dashboard despues del login
  */
 
 import React, { useState } from 'react';
@@ -16,80 +19,88 @@ import { iniciarSesion } from '../services/api';
 import './Login.css';
 
 const Login = () => {
-    // Estado del formulario
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    // Variables de estado para los campos del formulario
+    const [username, setUsername] = useState('');  // Nombre de usuario
+    const [password, setPassword] = useState('');  // Contraseña
     
-    // Estados de UI
-    const [error, setError] = useState('');
-    const [exito, setExito] = useState('');
-    const [cargando, setCargando] = useState(false);
+    // Variables de estado para mensajes
+    const [error, setError] = useState('');        // Mensaje de error
+    const [exito, setExito] = useState('');        // Mensaje de exito
+    const [cargando, setCargando] = useState(false); // Estado de carga
     
-    // Hook para navegación
+    // Hook para navegar entre paginas
     const navigate = useNavigate();
 
     /**
-     * Manejar el envío del formulario
-     * Valida los campos y envía la petición al backend
+     * Funcion que se ejecuta al enviar el formulario
+     * Valida los datos y envia la peticion al backend
      */
     const manejarEnvio = async (e) => {
+        // Evitar que el formulario recargue la pagina
         e.preventDefault();
         
         // Limpiar mensajes anteriores
         setError('');
         setExito('');
         
-        // Validar que los campos no estén vacíos
+        // Validar que ambos campos tengan contenido
         if (!username.trim() || !password.trim()) {
             setError('Por favor, completa todos los campos');
             return;
         }
         
+        // Activar estado de carga
         setCargando(true);
         
         try {
-            // Llamar al servicio de autenticación
+            // Llamar al servicio de login
             const resultado = await iniciarSesion(username, password);
             
-            // Almacenar token en localStorage
+            // Guardar token y datos del usuario en localStorage
             localStorage.setItem('token', resultado.token);
             localStorage.setItem('usuario', JSON.stringify(resultado.usuario));
             
+            // Mostrar mensaje de exito
             setExito(resultado.mensaje);
             
-            // Redirigir al dashboard después de 1.5 segundos
+            // Redirigir al dashboard despues de 1.5 segundos
             setTimeout(() => {
                 navigate('/dashboard');
             }, 1500);
             
         } catch (err) {
-            // Mostrar error del servidor
-            setError(err.error || 'Error al iniciar sesión');
+            // Mostrar error si falla el login
+            setError(err.error || 'Error al iniciar sesion');
         } finally {
+            // Desactivar estado de carga
             setCargando(false);
         }
     };
 
     return (
+        // Contenedor principal con fondo degradado
         <div className="login-container">
+            {/* Tarjeta del formulario */}
             <div className="login-card">
-                <h2 className="login-titulo">Iniciar Sesión</h2>
+                <h2 className="login-titulo">Iniciar Sesion</h2>
                 
-                {/* Mostrar mensaje de error */}
+                {/* Mostrar mensaje de error si existe */}
                 {error && (
                     <div className="mensaje-error">
                         {error}
                     </div>
                 )}
                 
-                {/* Mostrar mensaje de éxito */}
+                {/* Mostrar mensaje de exito si existe */}
                 {exito && (
                     <div className="mensaje-exito">
                         {exito}
                     </div>
                 )}
                 
+                {/* Formulario de login */}
                 <form onSubmit={manejarEnvio}>
+                    {/* Campo de usuario */}
                     <div className="campo-grupo">
                         <label htmlFor="username">Usuario</label>
                         <input
@@ -102,30 +113,33 @@ const Login = () => {
                         />
                     </div>
                     
+                    {/* Campo de contraseña */}
                     <div className="campo-grupo">
-                        <label htmlFor="password">Contraseña</label>
+                        <label htmlFor="password">Contrasena</label>
                         <input
                             type="password"
                             id="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Ingresa tu contraseña"
+                            placeholder="Ingresa tu contrasena"
                             disabled={cargando}
                         />
                     </div>
                     
+                    {/* Boton de envio */}
                     <button 
                         type="submit" 
                         className="boton-login"
                         disabled={cargando}
                     >
-                        {cargando ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+                        {cargando ? 'Iniciando sesion...' : 'Iniciar Sesion'}
                     </button>
                 </form>
                 
+                {/* Enlace para ir a registro */}
                 <div className="enlace-registro">
-                    ¿No tienes una cuenta? 
-                    <Link to="/register">Regístrate aquí</Link>
+                    No tienes una cuenta? 
+                    <Link to="/register">Registrate aqui</Link>
                 </div>
             </div>
         </div>

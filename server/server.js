@@ -1,56 +1,81 @@
 /**
- * API de Autenticación
+ * ============================================
+ * SERVIDOR PRINCIPAL - API DE AUTENTICACION
+ * ============================================
  * 
- * Este servicio web permite:
- * 1. Registrar nuevos usuarios
- * 2. Iniciar sesión con credenciales válidas
+ * Este archivo contiene el servidor backend que maneja:
+ * - Registro de nuevos usuarios
+ * - Inicio de sesion con usuario y contraseña
+ * - Verificacion de estado del servidor
  * 
- * Endpoints:
- * - POST /api/register: Registrar un nuevo usuario
- * - POST /api/login: Iniciar sesión
+ * Tecnologias utilizadas:
+ * - Express.js: Framework para crear el servidor web
+ * - bcryptjs: Para cifrar las contraseñas
+ * - jsonwebtoken: Para crear tokens de autenticacion
+ * - cors: Para permitir conexiones desde el frontend
  */
 
-const express = require('express');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const cors = require('cors');
+// Importar las librerias necesarias
+const express = require('express');   // Framework web
+const bcrypt = require('bcryptjs');   // Cifrado de contraseñas
+const jwt = require('jsonwebtoken');  // Tokens de autenticacion
+const cors = require('cors');         // Permite conexiones cross-origin
+
+// Crear la aplicacion Express
 const app = express();
+
+// Puerto donde escuchara el servidor
 const PORT = 3001;
 
-// Clave secreta para firmar tokens JWT (en producción usar variable de entorno)
+// Clave secreta para firmar los tokens (en produccion usar variable de entorno)
 const JWT_SECRET = 'mi_clave_secreta_segura_2024';
 
-// Middleware para parsear JSON en las peticiones
+// =====================
+// CONFIGURACION DEL SERVIDOR
+// =====================
+
+// Middleware: permite recibir datos en formato JSON
 app.use(express.json());
 
-// Middleware para permitir solicitudes desde el frontend (CORS)
+// Middleware: permite conexiones desde otros origenes (frontend)
 app.use(cors());
 
-// Almacén temporal de usuarios (en producción usar base de datos)
+// =====================
+// ALMACEN DE USUARIOS
+// =====================
+
+// Array temporal para guardar usuarios (en produccion usar base de datos)
 const usuarios = [];
 
+// =====================
+// RUTAS (ENDPOINTS)
+// =====================
+
 /**
- * Ruta para registrar un nuevo usuario
+ * POST /api/register
  * 
- * Recibe:
- * - username: nombre de usuario
- * - password: contraseña del usuario
+ * Registra un nuevo usuario en el sistema.
  * 
- * Retorna:
- * - 201: Registro exitoso con mensaje
- * - 400: Error si el usuario ya existe o faltan datos
+ * Datos que recibe:
+ *   - username: nombre de usuario
+ *   - password: contraseña del usuario
+ * 
+ * Respuestas:
+ *   - 201: Registro exitoso
+ *   - 400: Error (usuario ya existe o faltan datos)
  */
 app.post('/api/register', (req, res) => {
+    // Obtener datos del cuerpo de la peticion
     const { username, password } = req.body;
 
-    // Validar que se proporcionen username y password
+    // Validar que ambos campos esten presentes
     if (!username || !password) {
         return res.status(400).json({ 
             error: 'Username y password son requeridos' 
         });
     }
 
-    // Verificar si el usuario ya existe en el sistema
+    // Verificar si el usuario ya existe
     const usuarioExistente = usuarios.find(u => u.username === username);
     if (usuarioExistente) {
         return res.status(400).json({ 
@@ -58,10 +83,10 @@ app.post('/api/register', (req, res) => {
         });
     }
 
-    // Cifrar la contraseña con bcrypt (hash de 10 rondas)
+    // Cifrar la contraseña (10 rondas de hashing)
     const passwordCifrado = bcrypt.hashSync(password, 10);
 
-    // Crear objeto de usuario con datos cifrados
+    // Crear el nuevo usuario con id autoincremental
     const nuevoUsuario = {
         id: usuarios.length + 1,
         username,
@@ -69,12 +94,13 @@ app.post('/api/register', (req, res) => {
         fechaCreacion: new Date()
     };
 
-    // Guardar usuario en el almacén
+    // Guardar el usuario en el array
     usuarios.push(nuevoUsuario);
 
+    // Mensaje en consola para debug
     console.log(`Usuario registrado exitosamente: ${username}`);
 
-    // Retornar respuesta exitosa (sin incluir la contraseña)
+    // Enviar respuesta exitosa (sin incluir la contraseña)
     res.status(201).json({ 
         mensaje: 'Usuario registrado exitosamente',
         usuario: {
@@ -86,60 +112,64 @@ app.post('/api/register', (req, res) => {
 });
 
 /**
- * Ruta para iniciar sesión
+ * POST /api/login
  * 
- * Recibe:
- * - username: nombre de usuario
- * - password: contraseña del usuario
+ * Inicia sesion con las credenciales del usuario.
  * 
- * Retorna:
- * - 200: Autenticación satisfactoria con token JWT
- * - 401: Error de autenticación si credenciales son incorrectas
- * - 400: Error si faltan datos
+ * Datos que recibe:
+ *   - username: nombre de usuario
+ *   - password: contraseña del usuario
+ * 
+ * Respuestas:
+ *   - 200: Login exitoso con token JWT
+ *   - 401: Error (credenciales incorrectas)
+ *   - 400: Error (faltan datos)
  */
 app.post('/api/login', (req, res) => {
+    // Obtener datos del cuerpo de la peticion
     const { username, password } = req.body;
 
-    // Validar que se proporcionen username y password
+    // Validar que ambos campos esten presentes
     if (!username || !password) {
         return res.status(400).json({ 
             error: 'Username y password son requeridos' 
         });
     }
 
-    // Buscar el usuario en el almacén
+    // Buscar el usuario por nombre de usuario
     const usuario = usuarios.find(u => u.username === username);
 
-    // Verificar si el usuario existe
+    // Si el usuario no existe
     if (!usuario) {
         return res.status(401).json({ 
-            error: 'Error en la autenticación: usuario no encontrado' 
+            error: 'Error en la autenticacion: usuario no encontrado' 
         });
     }
 
-    // Verificar si la contraseña coincide con el hash almacenado
+    // Verificar si la contraseña coincide con la almacenada
     const passwordValido = bcrypt.compareSync(password, usuario.password);
     if (!passwordValido) {
         return res.status(401).json({ 
-            error: 'Error en la autenticación: contraseña incorrecta' 
+            error: 'Error en la autenticacion: contrasena incorrecta' 
         });
     }
 
-    // Generar token JWT con información del usuario
+    // Crear token JWT con datos del usuario
     const token = jwt.sign(
         { 
             id: usuario.id, 
             username: usuario.username 
         },
         JWT_SECRET,
-        { expiresIn: '1h' } // Token expira en 1 hora
+        { expiresIn: '1h' }  // El token expira en 1 hora
     );
 
-    console.log(`Inicio de sesión exitoso: ${username}`);
+    // Mensaje en consola para debug
+    console.log(`Inicio de sesion exitoso: ${username}`);
 
-    // Retornar respuesta exitosa con token
+    // Enviar respuesta con el token
     res.json({ 
-        mensaje: 'Autenticación satisfactoria',
+        mensaje: 'Autenticacion satisfactoria',
         token,
         usuario: {
             id: usuario.id,
@@ -149,22 +179,28 @@ app.post('/api/login', (req, res) => {
 });
 
 /**
- * Ruta para verificar estado del servidor
+ * GET /api/status
  * 
- * Retorna:
- * - 200: Mensaje de confirmación
+ * Verifica que el servidor este funcionando.
+ * 
+ * Respuestas:
+ *   - 200: Mensaje de confirmacion con informacion del servidor
  */
 app.get('/api/status', (req, res) => {
     res.json({ 
-        mensaje: 'API de autenticación funcionando correctamente',
+        mensaje: 'API de autenticacion funcionando correctamente',
         timestamp: new Date(),
         usuariosRegistrados: usuarios.length
     });
 });
 
-// Iniciar servidor en el puerto especificado
+// =====================
+// INICIAR SERVIDOR
+// =====================
+
+// Escuchar conexiones en el puerto especificado
 app.listen(PORT, () => {
-    console.log(`Servidor de autenticación ejecutándose en http://localhost:${PORT}`);
+    console.log(`Servidor de autenticacion ejecutandose en http://localhost:${PORT}`);
     console.log('Endpoints disponibles:');
     console.log(`  - POST http://localhost:${PORT}/api/register`);
     console.log(`  - POST http://localhost:${PORT}/api/login`);
