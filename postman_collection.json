@@ -1,0 +1,69 @@
+{
+	"info": {
+		"name": "API Autenticacion",
+		"description": "Coleccion de endpoints para la API de autenticacion con registro e inicio de sesion",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3001"
+		}
+	],
+	"item": [
+		{
+			"name": "1. Registrar Usuario",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/register",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "register"]
+				},
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"juan123\",\n    \"password\": \"micontrasena\"\n}"
+				}
+			}
+		},
+		{
+			"name": "2. Iniciar Sesion",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/login",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "login"]
+				},
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"juan123\",\n    \"password\": \"micontrasena\"\n}"
+				}
+			}
+		},
+		{
+			"name": "3. Verificar Estado",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/status",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "status"]
+				}
+			}
+		}
+	]
+}
