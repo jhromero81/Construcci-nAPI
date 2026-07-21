@@ -1,0 +1,14 @@
+{
+  "name": "auth-project",
+  "version": "1.0.0",
+  "description": "API de autenticación con React y Express.js",
+  "scripts": {
+    "server": "cd server && npm start",
+    "client": "cd client && npm start",
+    "install:all": "cd server && npm install && cd ../client && npm install",
+    "start": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "keywords": ["api", "auth", "react", "express"],
+  "author": "",
+  "license": "ISC"
+}

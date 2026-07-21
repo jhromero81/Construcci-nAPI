@@ -1,0 +1,23 @@
+# Dependencias
+node_modules/
+
+# Archivos de registro
+*.log
+logs/
+
+# Variables de entorno
+.env
+.env.local
+.env.production
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de compilación
+dist/
+build/
+
+# No incluir node_modules de subdirectorios
+server/node_modules/
+client/node_modules/

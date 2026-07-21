@@ -1,0 +1,115 @@
+/* Estilos del componente de Dashboard */
+
+.dashboard-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+}
+
+.dashboard-card {
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 600px;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #eee;
+}
+
+.dashboard-header h1 {
+    color: #333;
+    margin: 0;
+    font-size: 32px;
+}
+
+.boton-cerrar-sesion {
+    padding: 10px 20px;
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.boton-cerrar-sesion:hover {
+    background-color: #dc2626;
+}
+
+.dashboard-contenido {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.seccion {
+    background-color: #f8fafc;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.seccion h2 {
+    color: #475569;
+    margin: 0 0 15px 0;
+    font-size: 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+}
+
+.info-item:not(:last-child) {
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.etiqueta {
+    color: #64748b;
+    font-weight: 500;
+}
+
+.valor {
+    color: #1e293b;
+    font-weight: 600;
+}
+
+.mensaje-bienvenida {
+    text-align: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.mensaje-bienvenida h2 {
+    color: white;
+    border-bottom-color: rgba(255, 255, 255, 0.3);
+}
+
+.mensaje-bienvenida p {
+    margin: 10px 0;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.cargando {
+    text-align: center;
+    font-size: 18px;
+    color: #666;
+    padding: 40px;
+}
